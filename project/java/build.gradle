@@ -79,10 +79,36 @@ test {
 def buildDir = project.buildscript.sourceFile.parentFile.parentFile.parentFile.parentFile
 
 def make_cmd = "make"
+def sh_cmd = "sh"
+
 if (OperatingSystem.current().isWindows()) {
     def cyg_make_cmd = new File("c:/cygwin64/bin/make.exe")
     if (cyg_make_cmd.exists()) make_cmd = cyg_make_cmd.absolutePath
+    def cyg_sh_cmd = new File("c:/cygwin64/bin/sh.exe")
+    if (cyg_sh_cmd.exists()) sh_cmd = cyg_sh_cmd.absolutePath
 }
+
+task configure << {
+    def pb = new ProcessBuilder().directory(file(buildDir.absolutePath)).command(sh_cmd.toString(), "configure", "--with-freetype=" + (new File(buildDir.absolutePath.toString(), "jb/third_party/freetype")).toString())
+    def proc = pb.redirectErrorStream(true).start()
+    proc.inputStream.eachLine {println it}
+    assert proc.waitFor() == 0
+}
+
+task patch_libs << {
+    if (OperatingSystem.current().isMacOsX()) {
+        def pb = new ProcessBuilder().directory(file(buildDir.absolutePath)).command("install_name_tool", "-change", "/usr/local/lib/libfreetype.6.dylib", "@rpath/libfreetype.dylib.6", "build/macosx-x86_64-normal-server-release/images/j2re-bundle/jre1.8.0.jre/Contents/Home/lib/libfontmanager.dylib")
+        def proc = pb.redirectErrorStream(true).start()
+        proc.inputStream.eachLine { println it }
+        assert proc.waitFor() == 0
+
+        pb = new ProcessBuilder().directory(file(buildDir.absolutePath)).command("install_name_tool", "-change", "/usr/local/lib/libfreetype.6.dylib", "@rpath/libfreetype.dylib.6", "build/macosx-x86_64-normal-server-release/images/j2sdk-bundle/jdk1.8.0.jdk/Contents/Home/jre/lib/libfontmanager.dylib")
+        proc = pb.redirectErrorStream(true).start()
+        proc.inputStream.eachLine { println it }
+        assert proc.waitFor() == 0
+    }
+}
+
 
 task make_images << {
     def pb = new ProcessBuilder().command(make_cmd.toString(), "-C", buildDir.absolutePath,
@@ -98,6 +124,25 @@ task make_clean << {
     def proc = pb.redirectErrorStream(true).start()
     proc.inputStream.eachLine {println it}
     assert proc.waitFor() == 0
+}
+
+task copy_javafx (dependsOn: [make_images])   {
+    if (OperatingSystem.current().isMacOsX()) {
+        copy {
+            from((new File(buildDir.absolutePath.toString(), "jb/third_party/javafx-sdk/jre/lib")).toString())
+            into((new File(buildDir.absolutePath.toString(), "build/macosx-x86_64-normal-server-release/images/j2sdk-bundle/jdk1.8.0.jdk/Contents/Home/jre/lib")))
+        }
+    }
+    else if (OperatingSystem.current().isLinux()) {
+
+    }
+    else {
+
+    }
+}
+
+task make (dependsOn: [configure, make_images, patch_libs, copy_javafx]) << {
+
 }
 
 model {
