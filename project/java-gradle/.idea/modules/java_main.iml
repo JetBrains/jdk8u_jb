@@ -7,8 +7,8 @@
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/resources" type="java-resource" />
     </content>
     <content url="file://$MODULE_DIR$/../../../../../jdk/src">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../jdk/src/macosx/classes" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../../../jdk/src/share/classes" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../jdk/src/windows/classes" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
