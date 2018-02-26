@@ -1,26 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(hotspot)
 
-# common for all OS
-set(CMAKE_CXX_STANDARD 98)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GNU_SOURCE -D_REENTRANT -DVM_LITTLE_ENDIAN -D_LP64 -DTARGET_ARCH_x86 ")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DINCLUDE_SUFFIX_CPU=_x86 -DAMD64 -DHOTSPOT_LIB_ARCH='amd64' -DCOMPILER1 -DCOMPILER2")
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTARGET_COMPILER_gcc")
-endif ()
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DLINUX -DTARGET_OS_FAMILY_linux -DTARGET_COMPILER_gcc")
-endif ()
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_ALLBSD_SOURCE -DTARGET_OS_FAMILY_bsd")
-endif ()
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows") #not shure about TARGET_COMPILER
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTARGET_COMPILER_visCPP -DWIN64 -D_WINDOWS -DTARGET_OS_FAMILY_windows")
-endif ()
+include(../java-common.cmake)
 
 include_directories(
         ../../../hotspot/agent/src
@@ -1598,14 +1579,5 @@ set(SOURCE_FILES
         ../../../hotspot/src/share/vm/utilities/xmlstream.hpp
         ../../../hotspot/src/share/vm/utilities/yieldingWorkgroup.cpp
         ../../../hotspot/src/share/vm/utilities/yieldingWorkgroup.hpp)
-
-add_custom_target(configure
-        COMMAND bash configure
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/../../../)
-
-add_custom_target(build_images
-        COMMAND make COMPILER_WARNINGS_FATAL=false images
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/../../../
-        DEPENDS ${SOURCE_FILES})
 
 add_executable(hotspot ${SOURCE_FILES})
