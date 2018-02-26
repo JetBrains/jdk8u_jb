@@ -9,7 +9,8 @@ include_directories(
         ../../../jdk/src/share/native/sun/font
         ../../../jdk/src/share/native/sun/java2d
         ../../../jdk/src/share/native/sun/java2d/loops
-        ../../../jdk/src/share/native/sun/java2d/pipe)
+        ../../../jdk/src/share/native/sun/java2d/pipe
+        ../../../jdk/src/share/native/sun/awt/debug)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     include_directories(
@@ -29,9 +30,13 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     include_directories(
             ../../../build/linux-x86_64-normal-server-release/jdk/gensrc_headers)
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "CYGWIN")
     include_directories(
             ../../../jdk/src/windows/native/common
+            ../../../jdk/src/windows/native/sun/windows
+            ../../../jdk/src/windows/native/sun/java2d/windows
+            ../../../jdk/src/windows/native/sun/java2d/opengl
+            ../../../jdk/src/windows/native/sun/java2d/d3d
             ../../../jdk/src/windows/javavm/export
             ../../../build/windows-x86_64-normal-server-release/jdk/gensrc_headers)
 endif()
@@ -1539,7 +1544,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux"
             ../../../jdk/src/solaris/native/sun/tools/attach/SolarisVirtualMachine.c
             ../../../jdk/src/solaris/native/sun/tracing/dtrace/jvm_symbols_md.c)
 
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+elseif("${CMAKE_SYSTEM_NAME}" MATCHES "CYGWIN")
     set(SOURCE_FILES
             ${SOURCE_FILES}
             ../../../jdk/src/windows/native/com/sun/media/sound/PLATFORM_API_WinOS_DirectSound.cpp
