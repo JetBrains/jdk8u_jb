@@ -17,6 +17,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux"
             ../../../jdk/src/solaris/native
             ../../../jdk/src/solaris/native/common
             ../../../jdk/src/solaris/native/sun/awt
+            ../../../jdk/src/solaris/native/sun/java2d
             ../../../jdk/src/solaris/javavm/export)
 endif()
 
@@ -37,6 +38,7 @@ elseif("${CMAKE_SYSTEM_NAME}" MATCHES "CYGWIN")
             ../../../jdk/src/windows/native/sun/java2d/windows
             ../../../jdk/src/windows/native/sun/java2d/opengl
             ../../../jdk/src/windows/native/sun/java2d/d3d
+            ../../../jdk/src/windows/native/sun/java2d
             ../../../jdk/src/windows/javavm/export
             ../../../build/windows-x86_64-normal-server-release/jdk/gensrc_headers)
 endif()
