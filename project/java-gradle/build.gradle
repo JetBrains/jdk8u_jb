@@ -54,12 +54,12 @@ sourceSets {
             exclude "../../../jdk/test/jbu/native"
         }
     }
-    jdk_test {
-        java {
-            srcDirs = ["../../../jdk/test/java/awt",
-                       "../../../jdk/test/javax/swing"]
-        }
-    }
+//    jdk_test {
+//        java {
+//            srcDirs = ["../../../jdk/test/java/awt",
+//                       "../../../jdk/test/javax/swing"]
+//        }
+//    }
 }
 
 test.dependsOn.clear()
