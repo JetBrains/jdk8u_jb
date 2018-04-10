@@ -60,6 +60,11 @@ sourceSets {
 //                       "../../../jdk/test/javax/swing"]
 //        }
 //    }
+    j2dbench {
+        java {
+            srcDir "../../../jdk/src/share/demo/java2d/J2DBench/src"
+        }
+    }
 }
 
 test.dependsOn.clear()
