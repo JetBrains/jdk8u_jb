@@ -73,6 +73,8 @@ test.dependsOn tasks.compileTestJava
 test {
     systemProperty "testdata", file('../../../jdk/test/jbu/testdata').absolutePath
 
+//    systemProperty "sun.java2d.trace", "log,ptime,name:OGLTR_DrawGlyphList"
+
 //  Generate golden images for DroidFontTest and MixedTextTest
 //    systemProperty "gentestdata", ""
 
