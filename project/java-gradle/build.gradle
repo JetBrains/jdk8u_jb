@@ -11,7 +11,7 @@ def test_jvm = {
         file(jbsdkhome + (OperatingSystem.current().isWindows()?"/bin/java.exe" : "/bin/java")).absolutePath
     } else {
         if (OperatingSystem.current().isMacOsX()) {
-            file('../../../build/macosx-x86_64-normal-server-fastdebug/images/jdk-bundle/jdk-9.0.1.jdk/Contents/Home/bin/java').absolutePath
+            file('../../../build/macosx-x86_64-normal-server-release/images/jdk-bundle/jdk-9.0.4.jdk/Contents/Home/bin/java').absolutePath
         } else if (OperatingSystem.current().isLinux()) {
             file('../../../build/linux-x86_64-normal-server-release/images/jdk/bin/java').absolutePath
         } else {
@@ -97,7 +97,7 @@ if (OperatingSystem.current().isWindows()) {
     if (cyg_make_cmd.exists()) make_cmd = cyg_make_cmd.absolutePath
 }
 
-task make_images << {
+task make_images doLast {
     def pb = new ProcessBuilder().command(make_cmd.toString(), "-C", buildDir.absolutePath,
             " COMPILER_WARNINGS_FATAL=false", "images")
     def proc = pb.redirectErrorStream(true).start()
@@ -105,7 +105,7 @@ task make_images << {
     assert proc.waitFor() == 0
 }
 
-task make_clean << {
+task make_clean doLast {
     def pb = new ProcessBuilder().command(make_cmd.toString(), "-C", buildDir.absolutePath,
             " COMPILER_WARNINGS_FATAL=false", "clean")
     def proc = pb.redirectErrorStream(true).start()
