@@ -74,6 +74,7 @@ test.dependsOn tasks.compileTestJava
 test {
     systemProperty "jb.java2d.metal", "true"
     systemProperty "testdata", file('../../../jdk/test/jbu/testdata').absolutePath
+    systemProperty "jb.java2d.metal", 'true'
 
 //  Generate golden images for DroidFontTest and MixedTextTest
 //    systemProperty "gentestdata", ""
