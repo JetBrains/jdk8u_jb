@@ -10,6 +10,7 @@ include_directories(
         ../../../jdk/src/java.desktop/unix/native/common/java2d
         ../../../jdk/src/java.desktop/share/native/libawt/java2d/loops
         ../../../jdk/src/java.desktop/share/native/libawt/java2d/pipe
+        ../../../jdk/src/java.desktop/share/native/libawt/java2d
         ../../../jdk//src/java.desktop/share/native/common/awt/debug)
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")

@@ -85,7 +85,7 @@ test {
 //  Enable J2D logging (only in debug build)
 //  Can be turned on for J2D by adding "#define DEBUG 1" into jdk/src/share/native/sun/java2d/Trace.h
 
-//    environment 'J2D_TRACE_LEVEL', '4'
+    environment 'J2D_TRACE_LEVEL', '5'
 
     systemProperty "java.library.path", file("${buildDir}/libs/env/shared").absolutePath
 }
