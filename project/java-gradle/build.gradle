@@ -1,27 +1,57 @@
 apply plugin: 'java'
 apply plugin: 'c'
+import groovy.io.FileType
 import org.gradle.internal.os.OperatingSystem
 
 repositories {
     mavenCentral()
 }
 
-def test_jvm = {
-    if (project.hasProperty('jbsdkhome')) {
-        file(jbsdkhome + (OperatingSystem.current().isWindows()?"/bin/java.exe" : "/bin/java")).absolutePath
+def stable_jdk = {
+    File jdk_home
+    if (project.hasProperty('stable_jdk')) {
+        jdk_home = file(stable_jdk)
+    } else if (!System.getenv("JAVA_HOME").isEmpty()) {
+        jdk_home=file(System.getenv("JAVA_HOME"))
     } else {
+        throw new StopExecutionException("stable_jdk was not specified")
+    }
+    jdk_home.absolutePath
+}
+
+def test_jdk = {
+    File jdk_home
+    if (project.hasProperty('test_jdk')) {
+        jdk_home = file(test_jdk)
+    } else {
+        println("test_jdk was not specified")
         if (OperatingSystem.current().isMacOsX()) {
-            file('../../../build/macosx-x86_64-normal-server-release/images/j2sdk-bundle/jdk1.8.0.jdk/Contents/Home/bin/java').absolutePath
+            jdk_home = file('../../../build/macosx-x86_64-normal-server-release/images/j2sdk-bundle/jdk1.8.0.jdk/Contents/Home')
         } else if (OperatingSystem.current().isLinux()) {
-            file('../../../build/linux-x86_64-normal-server-release/images/j2sdk-image/bin/java').absolutePath
+            jdk_home = file('../../../build/linux-x86_64-normal-server-release/images/j2sdk-image')
         } else {
-            file('../../../build/windows-x86_64-normal-server-release/images/j2sdk-image/bin/java.exe').absolutePath
+            jdk_home = file('../../../build/windows-x86_64-normal-server-release/images/j2sdk-image')
         }
+    }
+    if (jdk_home.exists()) {
+        jdk_home.absolutePath
+    } else if (!System.getenv("JAVA_HOME").isEmpty()) {
+        file(System.getenv("JAVA_HOME")).absolutePath
+    } else {
+        throw new StopExecutionException("test_jdk was not specified")
     }
 }
 
+def stable_jvm = {
+    file(stable_jdk() + (OperatingSystem.current().isWindows() ? "/bin/java.exe" : "/bin/java")).absolutePath
+}
+
+def test_jvm = {
+    file(test_jdk() + (OperatingSystem.current().isWindows() ? "/bin/java.exe" : "/bin/java")).absolutePath
+}
+
 dependencies {
-    testCompile('junit:junit:4.12'){
+    testCompile('junit:junit:4.12') {
         exclude group: 'org.hamcrest'
     }
     testCompile 'org.hamcrest:hamcrest-library:1.3'
@@ -33,33 +63,48 @@ dependencies {
 
 if (OperatingSystem.current().isMacOsX())
     sourceSets.main.java.srcDirs =
-        ["../../../jdk/src/share/classes",
-         "../../../jdk/src/macosx/classes",
-        ]
+            ["../../../jdk/src/share/classes",
+             "../../../jdk/src/macosx/classes",
+            ]
 else if (OperatingSystem.current().isLinux())
     sourceSets.main.java.srcDirs =
-        ["../../../jdk/src/share/classes",
-         "../../../jdk/src/solaris/classes"
-        ]
+            ["../../../jdk/src/share/classes",
+             "../../../jdk/src/solaris/classes"
+            ]
 else
     sourceSets.main.java.srcDirs =
-        ["../../../jdk/src/share/classes",
-         "../../../jdk/src/windows/classes",
-        ]
+            ["../../../jdk/src/share/classes",
+             "../../../jdk/src/windows/classes",
+            ]
 
 sourceSets {
     test {
         java {
-            srcDir "../../../jdk/test/jbu"
-            exclude "../../../jdk/test/jbu/native"
+            srcDir "../../../jdk/testjbu"
+            exclude "../../../jdk/testjbu/native"
         }
     }
-//    jdk_test {
-//        java {
-//            srcDirs = ["../../../jdk/test/java/awt",
-//                       "../../../jdk/test/javax/swing"]
-//        }
-//    }
+    jtregtest {
+        java {
+            def list = []
+
+            def dir = new File("../../../jdk/test")
+            dir.eachFileRecurse(FileType.FILES) { file ->
+                //def ext = file.name.lastIndexOf('.').with {it != -1 ? file.name[(it+1)..<file.name.length()] : ""}
+                if (file.getText("UTF-8").find('@test') /*|| ext.compareTo("java")==0*/) {
+                    if (!list.contains(file.getParent())) {
+                        list << file.getParent()
+                    }
+                }
+            }
+            /*
+            list.each {
+                println it
+            }
+            */
+            srcDirs = list
+        }
+    }
     j2dbench {
         java {
             srcDir "../../../jdk/src/share/demo/java2d/J2DBench/src"
@@ -104,7 +149,7 @@ if (OperatingSystem.current().isWindows()) {
 task configure << {
     def pb = new ProcessBuilder().directory(file(buildDir.absolutePath)).command(sh_cmd.toString(), "configure", "--with-freetype=" + (new File(buildDir.absolutePath.toString(), "jb/third_party/freetype")).toString())
     def proc = pb.redirectErrorStream(true).start()
-    proc.inputStream.eachLine {println it}
+    proc.inputStream.eachLine { println it }
     assert proc.waitFor() == 0
 }
 
@@ -127,7 +172,7 @@ task make_images << {
     def pb = new ProcessBuilder().command(make_cmd.toString(), "-C", buildDir.absolutePath,
             " COMPILER_WARNINGS_FATAL=false", "images")
     def proc = pb.redirectErrorStream(true).start()
-    proc.inputStream.eachLine {println it}
+    proc.inputStream.eachLine { println it }
     assert proc.waitFor() == 0
 }
 
@@ -135,27 +180,88 @@ task make_clean << {
     def pb = new ProcessBuilder().command(make_cmd.toString(), "-C", buildDir.absolutePath,
             " COMPILER_WARNINGS_FATAL=false", "clean")
     def proc = pb.redirectErrorStream(true).start()
-    proc.inputStream.eachLine {println it}
+    proc.inputStream.eachLine { println it }
     assert proc.waitFor() == 0
 }
 
-task copy_javafx (dependsOn: [make_images])   {
+task copy_javafx(dependsOn: [make_images]) {
     if (OperatingSystem.current().isMacOsX()) {
         copy {
             from((new File(buildDir.absolutePath.toString(), "jb/third_party/javafx-sdk/jre/lib")).toString())
             into((new File(buildDir.absolutePath.toString(), "build/macosx-x86_64-normal-server-release/images/j2sdk-bundle/jdk1.8.0.jdk/Contents/Home/jre/lib")))
         }
-    }
-    else if (OperatingSystem.current().isLinux()) {
+    } else if (OperatingSystem.current().isLinux()) {
 
-    }
-    else {
+    } else {
 
     }
 }
 
-task make (dependsOn: [configure, make_images, patch_libs, copy_javafx]) << {
+task make(dependsOn: [configure, make_images, patch_libs, copy_javafx]) << {
 
+}
+
+def path_to_jdk = '../../../jdk'
+
+def jtreg_jar = {
+    if (project.hasProperty('jtreg')) {
+        file(jtreg + "/lib/jtreg.jar").absolutePath
+    } else if (!System.getenv("JT_HOME").isEmpty()) {
+        file(System.getenv("JT_HOME") + "/lib/jtreg.jar").absolutePath
+    } else {
+        throw new StopExecutionException("jtreg was not specified")
+    }
+}
+
+def jtreg_javaoptions = {
+    if (project.hasProperty('javaoptions')) {
+        "-javaoptions:" + javaoptions
+    } else {
+        ""
+    }
+}
+
+def jtreg_test_list = {
+    if (project.hasProperty('testlist')) {
+        def tests = testlist.tokenize(' ')
+        tests.collect {
+            "$path_to_jdk/test/$it".toString()
+        }
+    } else {
+        ["$path_to_jdk/test".toString()]
+    }
+}
+
+def exclude_list = {
+    if (project.hasProperty('exclude')) {
+        "-exclude:\"" + exclude + "\""
+    } else {
+        "-exclude:$path_to_jdk/test/jbProblemsList.txt".toString()
+    }
+}
+
+task runjtreg(dependsOn: []) {
+    doLast {
+        def jdk=test_jdk().toString();
+        List<String> parameters = [stable_jvm(),
+                                   "-jar", jtreg_jar(),
+                                   "-ignore:quiet", "-v", "-a", "-xml",
+                                   "-testjdk:" + jdk,
+                                   "-compilejdk:" + jdk,
+                                   "-r:$path_to_jdk/JTreport".toString(),
+                                   "-w:$path_to_jdk/JTwork".toString()]
+        if (!exclude_list().isEmpty())
+            parameters.addAll(exclude_list().toString())
+        if (!jtreg_javaoptions().isEmpty())
+            parameters.addAll(jtreg_javaoptions().toString())
+
+        parameters.addAll(jtreg_test_list() as List<String>)
+
+        def pb = new ProcessBuilder().command(parameters)
+        def proc = pb.redirectErrorStream(true).start()
+        proc.inputStream.eachLine { println it }
+        assert proc.waitFor() == 0
+    }
 }
 
 model {

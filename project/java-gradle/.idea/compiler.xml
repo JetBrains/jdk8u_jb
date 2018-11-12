@@ -3,8 +3,10 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
       <module name="java-gradle_j2dbench" target="1.8" />
+      <module name="java-gradle_jtregtest" target="1.8" />
       <module name="java-gradle_main" target="1.8" />
       <module name="java-gradle_test" target="1.8" />
+      <module name="java-gradle_testjbu" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
