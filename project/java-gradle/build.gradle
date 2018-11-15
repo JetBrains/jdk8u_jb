@@ -9,14 +9,29 @@ repositories {
 
 def stable_jdk = {
     File jdk_home
+
     if (project.hasProperty('stable_jdk')) {
         jdk_home = file(stable_jdk)
+
     } else if (!System.getenv("JAVA_HOME").isEmpty()) {
-        jdk_home=file(System.getenv("JAVA_HOME"))
-    } else {
-        throw new StopExecutionException("stable_jdk was not specified")
+        jdk_home = file(System.getenv("JAVA_HOME"))
+
+    } else if (OperatingSystem.current().isMacOsX()) {
+        new ByteArrayOutputStream().withStream { os ->
+            def result = exec {
+                executable = '/usr/libexec/java_home'
+                args = ['-v', '1.8']
+                standardOutput = os
+            }
+            ext.jdk_home_path = os.toString().trim()
+        }
+        jdk_home = file(jdk_home_path)
     }
-    jdk_home.absolutePath
+
+    if (jdk_home.exists())
+        jdk_home.absolutePath
+    else
+        throw new StopExecutionException("stable_jdk not found")
 }
 
 def test_jdk = {
@@ -116,7 +131,7 @@ test.dependsOn.clear()
 test.dependsOn tasks.compileTestJava
 
 test {
-    systemProperty "testdata", file('../../../jdk/test/jbu/testdata').absolutePath
+    systemProperty "testdata", file('../../../jdk/testjbu/testdata').absolutePath
 
 //    systemProperty "sun.java2d.trace", "log,ptime,name:OGLTR_DrawGlyphList"
 
@@ -242,7 +257,7 @@ def exclude_list = {
 
 task runjtreg(dependsOn: []) {
     doLast {
-        def jdk=test_jdk().toString();
+        def jdk = test_jdk().toString();
         List<String> parameters = [stable_jvm(),
                                    "-jar", jtreg_jar(),
                                    "-ignore:quiet", "-v", "-a", "-xml",
@@ -275,7 +290,7 @@ model {
         env(NativeLibrarySpec) {
             sources.c {
                 source {
-                    srcDirs "../../../jdk/test/jbu/native"
+                    srcDirs "../../../jdk/testjbu/native"
                 }
             }
 
