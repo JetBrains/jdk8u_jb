@@ -1,0 +1,27 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="java-gradle [Perf test]" type="GradleRunConfiguration" factoryName="Gradle">
+    <ExternalSystemSettings>
+      <option name="executionName" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$" />
+      <option name="externalSystemIdString" value="GRADLE" />
+      <option name="scriptParameters" value="--info -Pjnitests=true -Ptest_jdk=../../../../../jdk/jbsdk/jdk1343.15/Contents/Home" />
+      <option name="taskDescriptions">
+        <list />
+      </option>
+      <option name="taskNames">
+        <list>
+          <option value="test" />
+          <option value="--tests" />
+          <option value="performance.text.GreyscaleTextAreaScrollingTest" />
+          <option value="--tests" />
+          <option value="performance.text.LCDTextAreaScrollingTest" />
+          <option value="--tests" />
+          <option value="performance.ProgressPerformanceTest" />
+        </list>
+      </option>
+      <option name="vmOptions" value="" />
+    </ExternalSystemSettings>
+    <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+    <method v="2" />
+  </configuration>
+</component>
