@@ -13,7 +13,7 @@ def stable_jdk = {
     if (project.hasProperty('stable_jdk')) {
         jdk_home = file(stable_jdk)
 
-    } else if (!System.getenv("JAVA_HOME").isEmpty()) {
+    } else if (System.getenv("JAVA_HOME") != null && !System.getenv("JAVA_HOME").isEmpty()) {
         jdk_home = file(System.getenv("JAVA_HOME"))
 
     } else if (OperatingSystem.current().isMacOsX()) {
@@ -28,7 +28,7 @@ def stable_jdk = {
         jdk_home = file(jdk_home_path)
     }
 
-    if (jdk_home.exists())
+    if (jdk_home != null && jdk_home.exists())
         jdk_home.absolutePath
     else
         throw new StopExecutionException("stable_jdk not found")
@@ -39,7 +39,6 @@ def test_jdk = {
     if (project.hasProperty('test_jdk')) {
         jdk_home = file(test_jdk)
     } else {
-        println("test_jdk was not specified")
         if (OperatingSystem.current().isMacOsX()) {
             jdk_home = file('../../../build/macosx-x86_64-normal-server-release/images/j2sdk-bundle/jdk1.8.0.jdk/Contents/Home')
         } else if (OperatingSystem.current().isLinux()) {
@@ -48,10 +47,14 @@ def test_jdk = {
             jdk_home = file('../../../build/windows-x86_64-normal-server-release/images/j2sdk-image')
         }
     }
-    if (jdk_home.exists()) {
+
+    if ((jdk_home == null || !jdk_home.exists())
+            && (System.getenv("JAVA_HOME") != null && !System.getenv("JAVA_HOME").isEmpty())) {
+        jdk_home = file(System.getenv("JAVA_HOME"))
+    }
+
+    if (jdk_home != null && jdk_home.exists()) {
         jdk_home.absolutePath
-    } else if (!System.getenv("JAVA_HOME").isEmpty()) {
-        file(System.getenv("JAVA_HOME")).absolutePath
     } else {
         throw new StopExecutionException("test_jdk was not specified")
     }
@@ -219,10 +222,14 @@ task make(dependsOn: [configure, make_images, patch_libs, copy_javafx]) << {
 def path_to_jdk = '../../../jdk'
 
 def jtreg_jar = {
+    File jtreg_jar
     if (project.hasProperty('jtreg')) {
-        file(jtreg + "/lib/jtreg.jar").absolutePath
-    } else if (!System.getenv("JT_HOME").isEmpty()) {
-        file(System.getenv("JT_HOME") + "/lib/jtreg.jar").absolutePath
+        jtreg_jar = file(jtreg + "/lib/jtreg.jar")
+    } else if (System.getenv("JT_HOME") != null && !System.getenv("JT_HOME").isEmpty()) {
+        jtreg_jar = file(System.getenv("JT_HOME") + "/lib/jtreg.jar")
+    }
+    if (jtreg_jar != null && jtreg_jar.exists()) {
+        jtreg_jar.absolutePath
     } else {
         throw new StopExecutionException("jtreg was not specified")
     }
