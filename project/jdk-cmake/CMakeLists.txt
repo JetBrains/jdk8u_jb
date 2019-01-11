@@ -203,32 +203,32 @@ set(SOURCE_FILES
     ../../../jdk/src/share/native/java/nio/Bits.c
     ../../../jdk/src/share/native/java/security/AccessController.c
     ../../../jdk/src/share/native/java/util/concurrent/atomic/AtomicLong.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/compress.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/crc32.h
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/deflate.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/deflate.h
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/gzclose.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/gzguts.h
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/gzlib.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/gzread.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/gzwrite.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/infback.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/inffast.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/inffast.h
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/inffixed.h
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/inflate.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/inflate.h
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/inftrees.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/inftrees.h
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/trees.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/trees.h
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/uncompr.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/zadler32.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/zconf.h
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/zcrc32.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/zlib.h
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/zutil.c
-    ../../../jdk/src/share/native/java/util/zip/zlib-1.2.8/zutil.h
+    ../../../jdk/src/share/native/java/util/zip/zlib/compress.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/crc32.h
+    ../../../jdk/src/share/native/java/util/zip/zlib/deflate.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/deflate.h
+    ../../../jdk/src/share/native/java/util/zip/zlib/gzclose.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/gzguts.h
+    ../../../jdk/src/share/native/java/util/zip/zlib/gzlib.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/gzread.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/gzwrite.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/infback.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/inffast.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/inffast.h
+    ../../../jdk/src/share/native/java/util/zip/zlib/inffixed.h
+    ../../../jdk/src/share/native/java/util/zip/zlib/inflate.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/inflate.h
+    ../../../jdk/src/share/native/java/util/zip/zlib/inftrees.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/inftrees.h
+    ../../../jdk/src/share/native/java/util/zip/zlib/trees.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/trees.h
+    ../../../jdk/src/share/native/java/util/zip/zlib/uncompr.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/zadler32.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/zconf.h
+    ../../../jdk/src/share/native/java/util/zip/zlib/zcrc32.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/zlib.h
+    ../../../jdk/src/share/native/java/util/zip/zlib/zutil.c
+    ../../../jdk/src/share/native/java/util/zip/zlib/zutil.h
     ../../../jdk/src/share/native/java/util/zip/Adler32.c
     ../../../jdk/src/share/native/java/util/zip/CRC32.c
     ../../../jdk/src/share/native/java/util/zip/Deflater.c
@@ -372,12 +372,7 @@ set(SOURCE_FILES
     ../../../jdk/src/share/native/sun/awt/libpng/pngrutil.c
     ../../../jdk/src/share/native/sun/awt/libpng/pngset.c
     ../../../jdk/src/share/native/sun/awt/libpng/pngstruct.h
-    ../../../jdk/src/share/native/sun/awt/libpng/pngtest.c
     ../../../jdk/src/share/native/sun/awt/libpng/pngtrans.c
-    ../../../jdk/src/share/native/sun/awt/libpng/pngwio.c
-    ../../../jdk/src/share/native/sun/awt/libpng/pngwrite.c
-    ../../../jdk/src/share/native/sun/awt/libpng/pngwtran.c
-    ../../../jdk/src/share/native/sun/awt/libpng/pngwutil.c
     ../../../jdk/src/share/native/sun/awt/medialib/awt_ImagingLib.c
     ../../../jdk/src/share/native/sun/awt/medialib/awt_ImagingLib.h
     ../../../jdk/src/share/native/sun/awt/medialib/j2d_names.h
@@ -1391,7 +1386,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux"
             ../../../jdk/src/solaris/native/sun/awt/color.h
             ../../../jdk/src/solaris/native/sun/awt/colordata.h
             ../../../jdk/src/solaris/native/sun/awt/CUPSfuncs.c
-            ../../../jdk/src/solaris/native/sun/awt/extutil.h
             ../../../jdk/src/solaris/native/sun/awt/fontconfig.h
             ../../../jdk/src/solaris/native/sun/awt/fontpath.c
             ../../../jdk/src/solaris/native/sun/awt/gtk2_interface.c
